@@ -1,6 +1,6 @@
 本项目使用的技术栈：
 SpringBoot + MyBatis-Plus + MySql + Redis + thymeleaf
-```小功能```
+
 ```
 实时爬取网站信息功能：使用Java.net包下的HttpURLConnection来实时读取目标网站的数据
 定时任务（@EnableScheduled + @Scheduled）
