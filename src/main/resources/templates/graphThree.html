@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>全国累计确诊、死亡人数、治愈人数</title>
+    <script type="text/javascript" src="echarts/echarts.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<script th:inline="javascript">
+    //TODO 注意：在script标签中使用thymeleaf的标签时，需要 声明 th:inline="javascript"
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var dateList = [[${dateList}]];
+    var confirmList = [[${confirmList}]];
+    var deadList = [[${deadList}]];
+    var healList = [[${healList}]];
+
+    // 指定图表的配置项和数据
+    var option = {
+        title:{
+            text:"全国现有确珍趋势"
+        },
+        tooltip:{
+            trigger:'axis'
+        },
+        legend:{
+            data:['累计确诊','累计死亡','累计治愈']
+        },
+        xAxis: {
+            type: 'category',
+            data: JSON.parse(dateList),
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name:'累计确诊',
+            data: JSON.parse(confirmList),
+            type: 'line' //line表示图表是以曲线的形式展示的
+        },{
+            name:'累计死亡',
+            data:JSON.parse(deadList),
+            type: 'line'
+        },{
+            name:'累计治愈',
+            data:JSON.parse(healList),
+            type: 'line'
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>
