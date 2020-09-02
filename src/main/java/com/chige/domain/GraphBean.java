@@ -10,7 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class GraphBean implements Serializable {
 
-    private String data;
-    private int nowConfirm;
+    private String date;//日期
+    private int nowConfirm;//当前日期的确诊人数
 
 }

@@ -1,6 +1,8 @@
 package com.chige.handler;
 
+import com.chige.domain.GraphAddBean;
 import com.chige.domain.GraphBean;
+import com.chige.domain.GraphThreeBean;
 import com.chige.util.HttpClientUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,10 +38,51 @@ public class GraphHandler {
         return result;
     }
 
+    public static List<GraphAddBean> getGraphAddData(){
+        List<GraphAddBean> result = new ArrayList<>();
+        String resultStr = HttpClientUtil.doGet(urlStr);
+        Gson gson = new GsonBuilder().create();
+        Map map = gson.fromJson(resultStr, Map.class);
+        String dataStr = (String) map.get("data");
+        Map dataMap = gson.fromJson(dataStr, Map.class);
+        ArrayList chinaAddDayList = (ArrayList) dataMap.get("chinaDayAddList");
+
+        for (int i = 0; i < chinaAddDayList.size(); i++) {
+            Map map1  = (Map) chinaAddDayList.get(i);
+            String date = (String) map1.get("date");
+            double addConfirm = (double) map1.get("confirm");
+            double addSuspect = (double) map1.get("suspect");
+            GraphAddBean graphAddBean = new GraphAddBean(date, (int) addConfirm,(int)addSuspect);
+            result.add(graphAddBean);
+        }
+        return result;
+    }
+    public static List<GraphThreeBean> getGraphThreeData() {
+        List<GraphThreeBean> result = new ArrayList<>();
+        String resultStr = HttpClientUtil.doGet(urlStr);
+        Gson gson = new GsonBuilder().create();
+        Map map = gson.fromJson(resultStr, Map.class);
+        String dataStr = (String) map.get("data");
+        Map dataMap = gson.fromJson(dataStr, Map.class);
+        ArrayList chinaAddDayList = (ArrayList) dataMap.get("chinaDayList");
+
+        for (int i = 0; i < chinaAddDayList.size(); i++) {
+            Map map1  = (Map) chinaAddDayList.get(i);
+            String date = (String) map1.get("date");
+            double confirm = (double) map1.get("confirm");
+            double dead = (double) map1.get("dead");
+            double heal = (double) map1.get("heal");
+            GraphThreeBean graphThreeBean = new GraphThreeBean(date, (int) confirm,(int)dead,(int)heal);
+            result.add(graphThreeBean);
+        }
+        return result;
+    }
+
     //测试方法
     public static void main(String[] args) {
-        List<GraphBean> graphBeanList = getGraphData();
-        System.out.println(graphBeanList);
+        List<GraphThreeBean> graphThreeBeans = getGraphThreeData();
+        System.out.println(graphThreeBeans);
     }
+
 
 }
