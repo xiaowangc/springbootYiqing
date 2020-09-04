@@ -22,12 +22,10 @@ public class HttpClientUtil {
         CloseableHttpResponse httpResponse = null;
         try {
             httpClient = HttpClients.createDefault();//使用默认的创建httpClient对象的方式
-
             //请求方法对象Get方法
             HttpGet httpGet = new HttpGet(urlStr);
             //设置请求头
             httpGet.addHeader("Accept","application/json");
-
             //设置参数
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectionRequestTimeout(35000)
