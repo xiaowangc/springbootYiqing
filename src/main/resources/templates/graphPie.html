@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>港澳台、31省地区、境外输入统计饼图</title>
+    <script type="text/javascript" src="echarts/echarts.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    var graphPie = [[${graphPie}]];
+    var nameList = [[${nameList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '港澳台、31省地区、境外输入病例分析图',
+            left: 'center',
+
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: JSON.parse(nameList)
+        },
+        series: [
+            {
+                type:'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: JSON.parse(graphPie)
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
+</body>
+</html>

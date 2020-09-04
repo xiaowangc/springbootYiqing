@@ -5,6 +5,7 @@ import com.chige.util.HttpClientUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.*;
 
 /** 利用Echarst
@@ -132,18 +133,16 @@ public class GraphHandler {
         for(Object o : map1.keySet()){
             String name = (String)o;
             switch (name){
-                case "gat":name = "港澳台病例:";break;
-                case "import":name = "境外输入病例:";break;
-                case "province":name="31省本土病例:";break;
+                case "gat":name = "港澳台病例 ";break;
+                case "import":name = "境外输入病例 ";break;
+                case "province":name="31省本土病例 ";break;
             }
             double number = (double) map1.get(o);
-            name = name + number + "例";
-            GraphPieBean graphPieBean = new GraphPieBean(name, (int) number);
+            GraphPieBean graphPieBean = new GraphPieBean((int) number,name);
             graphPieBeanList.add(graphPieBean);
         }
         return graphPieBeanList;
     }
-
 
     //测试方法
     public static void main(String[] args) {
