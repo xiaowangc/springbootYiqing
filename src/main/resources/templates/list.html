@@ -2,34 +2,331 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
-
+    <title th:text="#{list.title}">ChiGe_it: 疫情最新动态</title>
+    <script type="text/javascript" src="echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="echarts1/echarts.min.js"></script>
+    <!--引入中国的地图数据js文件，引入后会自动注册地图名字和数据-->
+    <script type="text/javascript" src="echarts/china.js"></script>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
-<h1>疫情情报网</h1>
+<div style="border: 0px solid #000000; width: 1000px;margin: 0 auto;">
+<br>
+<div class="page-header"><h2 th:text="#{list.h2}">国内疫情情况如下</h2></div>
+<br>
+    <label>
+        <a class="btn btn-sm" th:href="@{/(lan='zh_CN')}">中文</a>
+        <a class="btn btn-sm" th:href="@{/(lan='en_US')}">英文 [功能完善中...]</a>
+    </label>
+
+<div id="myMap" style="width: 1000px;height:700px;margin: auto"></div>
+<!--<div id="main" style="width: 1000px;height:700px;"></div>-->
+
+
+
+<script th:inline="javascript">
+    var myMap = echarts.init(document.getElementById('myMap'));
+    var dataStr = [[${mapBeanList}]];
+    var option = {
+        title: {
+            text: '中国疫情图',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['中国疫情图']
+        },
+        visualMap: {
+            type: 'piecewise',
+            pieces: [
+                {min: 1000, max: 1000000, label: '大于等于1000人', color: '#372a28'},
+                {min: 500, max: 999, label: '确诊500-999人', color: '#4e160f'},
+                {min: 100, max: 499, label: '确诊100-499人', color: '#974236'},
+                {min: 10, max: 99, label: '确诊10-99人', color: '#ee7263'},
+                {min: 1, max: 9, label: '确诊1-9人', color: '#f5bba7'},
+            ],
+            color: ['#E0022B', '#E09107', '#A3E00B']
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        roamController: {
+            show: true,
+            left: 'right',
+            mapTypeControl: {
+                'china': true
+            }
+        },
+        series: [
+            {
+                name: '确诊数',
+                type: 'map',
+                mapType: 'china',
+                roam: false,
+                label: {
+                    show: true,
+                    color: 'rgb(249, 249, 249)'
+                },
+                data: JSON.parse(dataStr)
+            }
+        ]
+    };
+
+    //使用指定的配置项和数据显示图表
+    myMap.setOption(option);
+</script>
+<br>
+<br>
+<!--graph.html-->
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="graph" style="width: 600px;height:400px;margin: auto"></div>
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myGraphChart = echarts.init(document.getElementById('graph'));
+    var dateList = [[${dateList}]];
+    var nowConfirmList = [[${nowConfirmList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: "全国现有确珍趋势"
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['现有确珍']
+        },
+        xAxis: {
+            type: 'category',
+            data: JSON.parse(dateList),
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: '现有确诊',
+            data: JSON.parse(nowConfirmList),
+            type: 'line'
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myGraphChart.setOption(option);
+</script>
+<br>
+<br>
+<!--graphAdd.html-->
+    <div id="graphAdd" style="width: 600px;height:400px;margin: auto"></div>
+<script th:inline="javascript">
+    var myGraphAdd = echarts.init(document.getElementById('graphAdd'))
+    // 基于准备好的dom，初始化echarts实例
+    var addDateList = [[${addDateList}]];
+    var addConfirmList = [[${addConfirmList}]];
+    var addSuspectList = [[${addSuspectList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: "全国新增确证、新增疑似趋势图"
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['新增确珍', '新增疑似']
+        },
+        xAxis: {
+            type: 'category',
+            data: JSON.parse(addDateList),
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: '新增确诊',
+            data: JSON.parse(addConfirmList),
+            type: 'line' //line表示图表是以曲线的形式展示的
+        }, {
+            name: '新增疑似',
+            data: JSON.parse(addSuspectList),
+            type: 'line'
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myGraphAdd.setOption(option);
+</script>
+<br>
+<br>
+<div id="graphColumnar" style="width: 600px;height:400px;margin: auto"></div>
+<script th:inline="javascript">
+    var graphColumnar = echarts.init(document.getElementById('graphColumnar'));
+
+    // 基于准备好的dom，初始化echarts实例
+    var areaNameList = [[${areaNameList}]];
+    var importAbroadNumber = [[${importAbroadNumber}]];
+
+
+    // 指定图表的配置项和数据
+    var option = {
+        title:{
+          text:'境外输入Top10的城市'
+        },
+        color: ['#3398DB'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: JSON.parse(areaNameList),
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '境外输入',
+                type: 'bar',
+                barWidth: '60%',
+                data: JSON.parse(importAbroadNumber)
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    graphColumnar.setOption(option);
+</script>
+<br>
+<br>
+<div id="graphPie" style="width: 600px;height:400px;margin: auto"></div>
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myGraphPie = echarts.init(document.getElementById('graphPie'));
+    var graphPie = [[${graphPie}]];
+    var nameList = [[${nameList}]];
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '港澳台、31省地区、境外输入病例分析图',
+            left: 'center',
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: JSON.parse(nameList)
+        },
+        series: [
+            {
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: JSON.parse(graphPie)
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myGraphPie.setOption(option);
+</script>
+<br>
+<br>
+<div id="graphThree" style="width: 600px;height:400px;margin: auto"></div>
+
+<script th:inline="javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var graphThree = echarts.init(document.getElementById('graphThree'));
+    var dateList = [[${dateList}]];
+    var confirmList = [[${confirmList}]];
+    var deadList = [[${deadList}]];
+    var healList = [[${healList}]];
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: "全国现有确珍趋势"
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['累计确诊', '累计死亡', '累计治愈']
+        },
+        xAxis: {
+            type: 'category',
+            data: JSON.parse(dateList),
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            name: '累计确诊',
+            data: JSON.parse(confirmList),
+            type: 'line' //line表示图表是以曲线的形式展示的
+        }, {
+            name: '累计死亡',
+            data: JSON.parse(deadList),
+            type: 'line'
+        }, {
+            name: '累计治愈',
+            data: JSON.parse(healList),
+            type: 'line'
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    graphThree.setOption(option);
+</script>
+<br>
+<br>
+<h1>国内疫情</h1>
 <br>
 <table class="table table-hover">
     <thead>
     <tr>
-        <th>地区</th>
-        <th>现有确诊</th>
-        <th>累计确诊</th>
-        <th>治愈</th>
-        <th>死亡</th>
+        <th th:text="#{list.table.area}">地区</th>
+        <th th:text="#{list.table.nowConfirm}">现有确诊</th>
+        <th th:text="#{list.table.confirm}">累计确诊</th>
+        <th th:text="#{list.table.heal}">治愈</th>
+        <th th:text="#{list.table.dead}">死亡</th>
     </tr>
     </thead>
     <tbody>
-        <tr th:each="data:${dataList}">
-            <td th:text="${data.area}"> name </td>
-            <td th:text="${data.nowConfirm}"> nowConfirm </td>
-            <td th:text="${data.confirm}"> confirm </td>
-            <td th:text="${data.heal}"> heal </td>
-            <td th:text="${data.dead}"> dead </td>
-        </tr>
-
+    <tr th:each="data:${dataList}">
+        <td th:text="${data.area}"> name</td>
+        <td th:text="${data.nowConfirm}"> nowConfirm</td>
+        <td th:text="${data.confirm}"> confirm</td>
+        <td th:text="${data.heal}"> heal</td>
+        <td th:text="${data.dead}"> dead</td>
+    </tr>
     </tbody>
-
 </table>
+</div>
 </body>
 </html>

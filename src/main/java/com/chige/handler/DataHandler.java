@@ -80,7 +80,7 @@ public class DataHandler {
      * @return
      * @throws IOException
      */
-    public static List<DataBean> myHandleData() throws IOException {
+    public static List<DataBean> myHandleData() {
 
         //一：读取数据文件信息
 
@@ -125,15 +125,11 @@ public class DataHandler {
     }
 
     //在项目启动的时候顺便读取一次数据
-    @PostConstruct
+//    @PostConstruct
     public void initData(){
         System.out.println("服务器启动时，触发读取数据...");
         List<DataBean> dataBeans = null;
-        try {
-            dataBeans = myHandleData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        dataBeans = myHandleData();
         saveData(dataBeans);
     }
     //将收集到的数据存放到数据库中
@@ -152,13 +148,9 @@ public class DataHandler {
      */
     @Scheduled(cron = "0 0 0/4 * * ?")  //定时任务：每四个小时触发一次updateData()
     private void updateData(){
-        try {
-            System.out.println("更新数据");
-            List<DataBean> dataBeans = myHandleData();
-            saveData(dataBeans);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("更新数据");
+        List<DataBean> dataBeans = myHandleData();
+        saveData(dataBeans);
     }
 
     public static void main(String[] args) throws IOException {
