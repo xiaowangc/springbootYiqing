@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>全国疫情地图</title>
+    <script type="text/javascript" src="echarts1/echarts.min.js"></script>
+    <!--引入中国的地图数据js文件，引入后会自动注册地图名字和数据-->
+    <script type="text/javascript" src="echarts/china.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="myDiv" style="width: 1000px;height:700px;"></div>
+<!--<div id="main" style="width: 1000px;height:700px;"></div>-->
+
+<script th:inline="javascript">
+    var myChart = echarts.init(document.getElementById('myDiv'));
+    var dataStr = [[${mapBeanList}]];
+    var option = {
+        title: {
+            text: '中国疫情图',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['中国疫情图']
+        },
+        visualMap: {
+            type: 'piecewise',
+            pieces: [
+                { min: 1000, max: 1000000, label: '大于等于1000人', color: '#372a28' },
+                { min: 500, max: 999, label: '确诊500-999人', color: '#4e160f' },
+                { min: 100, max: 499, label: '确诊100-499人', color: '#974236' },
+                { min: 10, max: 99, label: '确诊10-99人', color: '#ee7263' },
+                { min: 1, max: 9, label: '确诊1-9人', color: '#f5bba7' },
+            ],
+            color: ['#E0022B', '#E09107', '#A3E00B']
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                mark: { show: true },
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+        roamController: {
+            show: true,
+            left: 'right',
+            mapTypeControl: {
+                'china': true
+            }
+        },
+        series: [
+            {
+                name: '确诊数',
+                type: 'map',
+                mapType: 'china',
+                roam: false,
+                label: {
+                    show: true,
+                    color: 'rgb(249, 249, 249)'
+                },
+                data: JSON.parse(dataStr)
+            }
+        ]
+    };
+
+    //使用指定的配置项和数据显示图表
+    myChart.setOption(option);
+</script>
+
+</body>
+</html>
