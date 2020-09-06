@@ -15,7 +15,6 @@ import java.util.List;
 
 @Controller
 public class MapBeanController {
-
     @Autowired
     private DataService dataService;
     @GetMapping("/map")
@@ -28,7 +27,6 @@ public class MapBeanController {
         }
         model.addAttribute("mapBeanList",new Gson().toJson(mapBeanList));
         return "map";
-
     }
 
 }
