@@ -10,7 +10,6 @@
 <div id="main" style="width: 600px;height:400px;"></div>
 
 <script th:inline="javascript">
-    //TODO 注意：在script标签中使用thymeleaf的标签时，需要 声明 th:inline="javascript"
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
     var areaNameList = [[${areaNameList}]];
