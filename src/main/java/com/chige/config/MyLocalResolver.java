@@ -6,9 +6,8 @@ import org.thymeleaf.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
-
+//作用：处理国际化语言的解析类
 public class MyLocalResolver implements LocaleResolver {
-
 
     @Override
     public Locale resolveLocale(HttpServletRequest httpServletRequest) {
